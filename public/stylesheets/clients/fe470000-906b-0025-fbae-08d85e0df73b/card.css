@@ -1,0 +1,220 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap");
+.restore-order-wraper .restore-order {
+  font-family: inherit;
+  top: 50px; }
+
+@media (max-width: 768px) {
+  .restore-cart-wrapper {
+    top: unset;
+    bottom: 80px;
+    right: 10px; } }
+
+.restore__main-content {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 30px;
+  row-gap: 100px; }
+  @media (max-width: 768px) {
+    .restore__main-content {
+      grid-template-columns: repeat(1, 1fr);
+      row-gap: 40px; } }
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .restore__main-content {
+      grid-template-columns: repeat(3, 1fr); } }
+
+.restore-cart-wrapper .restore-cart-counter {
+  background: #1E1E1E; }
+
+.restore__card {
+  max-width: 100%;
+  height: 532px;
+  background-color: transparent;
+  overflow: hidden;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 1; }
+  @media (max-width: 768px) {
+    .restore__card {
+      margin: unset;
+      padding: 0 15px; } }
+  @media (max-width: 992px) {
+    .restore__card {
+      max-width: 100%;
+      height: auto; } }
+  .restore__card-title {
+    grid-column: 1/3;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    letter-spacing: 0.028em;
+    font-family: "Montserrat", sans-serif; }
+  .restore__card-description {
+    grid-column: 1/3;
+    font-size: 12px;
+    color: #BB8E8C;
+    margin: 0 0 10px;
+    letter-spacing: 0.028em;
+    font-family: "Montserrat", sans-serif; }
+  .restore__card-price {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: right;
+    padding-right: 45px;
+    font-weight: 600;
+    line-height: 1.875;
+    font-size: 18px;
+    font-family: "Montserrat", sans-serif; }
+    @media (min-width: 768px) and (max-width: 992px) {
+      .restore__card-price {
+        padding-right: 25px; } }
+  .restore__card-info {
+    line-height: 1.5;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: grid;
+    grid-template-columns: 1fr min-content;
+    grid-template-rows: min-content 1fr min-content;
+    flex: 1 1 auto;
+    text-align: left;
+    padding: 28px 0 0;
+    min-height: 250px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box; }
+  .restore__card-gramms {
+    padding-top: 11px;
+    font-size: 12px;
+    color: #1e1e1e; }
+
+.restore__card-counter-wrapper {
+  display: flex;
+  justify-content: flex-end; }
+
+.restore__card-image {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  background-size: cover;
+  background: no-repeat center center; }
+  .restore__card-image img {
+    max-width: 100%;
+    height: auto; }
+  @media (max-width: 992px) {
+    .restore__card-image {
+      height: auto; }
+      .restore__card-image img {
+        width: 100%; } }
+
+div[data-style="white"] .restore__card-info .restore__card-title {
+  color: #1e1e1e; }
+div[data-style="white"] .restore__card-info .restore__card-price {
+  color: #1E1E1E; }
+div[data-style="white"] .restore__card-info .restore__card-info .restore__card-counter-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  background: #0d0f13;
+  -ms-flex-item-align: center;
+  align-self: center; }
+div[data-style="white"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-family: "Montserrat", sans-serif;
+  background-color: transparent;
+  border: 1px solid #0d0f13;
+  color: #0d0f13;
+  border-radius: 3px;
+  transition: all 0.8s cubic-bezier(0.42, 0, 0.58, 1) 0s;
+  outline: medium none;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: 300;
+  cursor: pointer; }
+  div[data-style="white"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action:hover {
+    color: #eeeeed !important;
+    text-decoration: none; }
+  div[data-style="white"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action:hover::before {
+    left: 0;
+    right: auto;
+    width: 100%; }
+  div[data-style="white"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action::before {
+    color: #eeeeed;
+    content: "";
+    left: auto;
+    top: 0;
+    right: 0;
+    width: 0%;
+    height: 100%;
+    position: absolute;
+    transition: all 300ms ease;
+    z-index: -1;
+    background-color: #0d0f13;
+    border-radius: 3px; }
+
+div[data-style="black"] {
+  background: transparent; }
+  div[data-style="black"] .restore__card-gramms {
+    color: #fff; }
+  div[data-style="black"] .restore__card-info .restore__card-title {
+    color: #eeeeed; }
+  div[data-style="black"] .restore__card-info .restore__card-description {
+    grid-column: 1/3;
+    font-size: 13px;
+    color: #BB8E8C;
+    margin: 0 0 10px;
+    line-height: 1.7;
+    font-family: "Montserrat", sans-serif; }
+  div[data-style="black"] .restore__card-info .restore__card-price {
+    color: #fff; }
+  div[data-style="black"] .restore__card-info .restore__card-info .restore__card-counter-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    background: #0d0f13;
+    -ms-flex-item-align: center;
+    align-self: center; }
+  div[data-style="black"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7px 20px;
+    font-size: 14px;
+    font-family: "Montserrat", sans-serif;
+    background-color: transparent;
+    border: 1px solid #eeeeed;
+    color: #eeeeed;
+    border-radius: 3px;
+    transition: all 0.8s cubic-bezier(0.42, 0, 0.58, 1) 0s;
+    outline: medium none;
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 300;
+    cursor: pointer; }
+    div[data-style="black"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action:hover {
+      color: #0d0f13 !important; }
+    div[data-style="black"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action:hover::before {
+      left: 0;
+      right: auto;
+      width: 100%; }
+    div[data-style="black"] .restore__card-info .restore__card-counter-wrapper .restore__card__btn-action::before {
+      color: #0d0f13;
+      content: "";
+      left: auto;
+      top: 0;
+      right: 0;
+      width: 0%;
+      height: 100%;
+      position: absolute;
+      transition: all 300ms ease;
+      z-index: -1;
+      background-color: #eeeeed; }
+
+/*# sourceMappingURL=card.css.map */

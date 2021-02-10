@@ -1,0 +1,96 @@
+$width-card: 360px;
+$height-card: 455px;
+
+.restore__main-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin: auto;
+    max-width: 1200px;
+}
+
+.restore-cart-wrapper {
+    .restore-cart-counter { 
+        background-color: #c0a36b; 
+    }
+}
+
+.restore-order-wrapper{
+    .restore-order__footer-btn-order{
+        background-color: #c0a36b;
+    }
+}
+
+.restore__card {
+    width: $width-card;
+    height: $height-card;
+    background-color: #fff;
+    margin: 10px;
+    overflow: hidden;
+
+    &-image {
+        display: flex;
+        justify-content: center;
+        max-width: 100%;
+        max-height: 100%;
+        height: 255px;
+    }
+
+    &-title{
+        font-size: 20px;
+        font-weight: 500;
+        font-family: 'Playfair Display';
+    }
+
+    &-description{
+        line-height: 1.55;
+        font-size: 16px;
+        font-weight: 300;
+        font-family: 'Circe'
+    }
+
+    &-price{
+        line-height: 1.35;
+        font-size: 16px;
+        font-weight: 400;
+        font-family: 'Playfair Display'
+    }
+
+    &-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        text-align: center;
+        padding: 15px;
+        min-height: 200px;
+        box-sizing: border-box;
+
+        .restore__card-counter-wrapper {
+            display: flex;
+            align-self: center;
+
+            .restore__card__btn-action {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 40px;
+                padding: 3px 30px;
+                color: #ffffff !important;
+                background-color: #c0a36b;
+                -webkit-border-radius: 5px;
+                font-family: Playfair Display;
+                font-weight: 300;
+                font-size: 14px;
+                text-transform: uppercase;
+                text-align: center;
+                user-select: none;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #6f5d2b;
+                }
+            }
+        }
+    }
+}
