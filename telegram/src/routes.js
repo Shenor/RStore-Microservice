@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const controller = require('./controller');
 
-const userRoutes = require('./controller/user.controller');
-const configRoutes = require('./controller/config.controller');
-const integrationRoutes = require('./controller/integration.controller');
-
-router.use('/user', userRoutes)
-router.use('/config', configRoutes)
-router.use('/integration', integrationRoutes)
+router.use('/users', controller.userRoutes)
+router.use('/configs', controller.configRoutes)
+router.use('/integrations', controller.integrationRoutes)
 
 router.get('/', (req, res) => res.send('OK'));
 router.get('/health-check', (req, res) => res.send('OK'));

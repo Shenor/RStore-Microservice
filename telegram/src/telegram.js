@@ -1,10 +1,5 @@
-const { DateTime } = require('luxon');
-const TelegramBot = require('node-telegram-bot-api');
 const User = require('./models/usersModel');
-const config = require('./config/config');
-
-const token = config.bot_token;
-const bot = new TelegramBot(token, {polling: true});
+const bot = require('./helpers/create-telegram-bot');
 
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
@@ -27,6 +22,8 @@ bot.on('message', async (msg) => {
       })
     bot.sendMessage(chatId, 'Вы успешно авторизованы в системе!', sharedOptions)
   }
+
+  console.log(msg)
 });
 
 bot.onText(/\/start|↩ Назад/, async (msg) => {
