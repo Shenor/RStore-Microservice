@@ -1,5 +1,5 @@
 const sc = require('node-nats-streaming').connect('nats-cluster', 'test1', {
-  servers: ['nats://185.22.61.139:14222']
+  servers: ['nats://localhosts:14222']
 })
 
 sc.on('connect', () => {
