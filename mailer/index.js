@@ -13,6 +13,6 @@ app.use(routes);
 // Consumer handler
 require('./src/consumer');
 
-app.listen(config.port || '3000', () => {
-  console.log(`Telegram service listening at http://localhost:${config.port}`)
+app.listen(config.mailer_port || '3000', () => {
+  console.log(`Mailer service listening at http://localhost:${config.mailer_port}`)
 })
