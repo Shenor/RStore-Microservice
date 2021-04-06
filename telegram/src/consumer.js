@@ -1,9 +1,10 @@
 const User = require('./models/usersModel');
 const Config = require('./models/configModel');
 
+const config = require('./config/config');
 const bot = require('./helpers/create-telegram-bot');
-const sc = require('node-nats-streaming').connect('nats-cluster', 'telegram', {
-  servers: ['nats://localhost:14222']
+const sc = require('node-nats-streaming').connect(config.nats_cluster, 'telegram', {
+  servers: [config.nats_host]
 })
 
 const transformOrder = require('./utils/transform-order');

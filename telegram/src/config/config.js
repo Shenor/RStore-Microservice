@@ -8,5 +8,7 @@ module.exports = {
   db_name: process.env.TELEGRAM_DB_NAME,
   db_password: process.env.TELEGRAM_DB_PASSWORD,
   bot_token: process.env.TELEGRAM_BOT_TOKEN,
+  nats_host: process.env.NATS_HOST,
+  nats_cluster: process.env.NATS_CLUSTER,
   port: process.env.TELEGRAM_PORT
 }
