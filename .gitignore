@@ -72,6 +72,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# Todo files
+.todo
+
 # dotenv environment variables file
 .env
 .env.test
@@ -106,6 +109,3 @@ dist
 
 # TernJS port file
 .tern-port
-
-# Todo files
-.todo
