@@ -935,11 +935,11 @@ module.exports = {
                   this.isSendingOrder = true
 
                   const order = {
+                    organizationId,
                     cart: this.cartData,
                     orderPrice: this.getTotalSum,
                     discount: this.getDiscount,
                     deliveryPrice: this.deliveryPrice,
-                    organizationID: organizationId,
                     name: this.name.value,
                     phone: this.phone.value,
                     email: this.email.value,
@@ -1043,7 +1043,7 @@ module.exports = {
     _loadCSS: async function () {
         document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" href="${ this._host }/iiko/stylesheets/rstore.css">`);
         // document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" href="${ this._host }/stylesheets/clients/default/card.css">`);
-        document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" href="${ this._host }/iiko/stylesheets/clients/${this.getOrganizationID()}/card.css">`);
+        document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" href="${ this._host }/iiko/stylesheets/clients/${this.getOrganizationId()}/card.css">`);
         document.head.insertAdjacentHTML('beforeend', `<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shenor/cartography_api@master/jquery.fias.min.css">`);
         document.head.insertAdjacentHTML('beforeend', `<script defer src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>`);
     },
@@ -1057,7 +1057,7 @@ module.exports = {
             throw new Error(error);
         }
     },
-    getOrganizationID: function () {
-        return this.nomenclature.organizationID;
+    getOrganizationId: function () {
+        return this.nomenclature.organizationId;
     },
 }

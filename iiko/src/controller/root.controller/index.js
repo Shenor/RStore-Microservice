@@ -2,14 +2,13 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const { DateTime } = require('luxon');
 
-const config = require('../../../config/config');
 const User = require('../../models/userModel');
 const Order = require('../../models/orderModel');
 const Organization = require('../../models/organizationModel');
 const Nomenclature = require('../../models/nomenclatureModel');
 const ServiceAPI = require('../../service/ServiceAPI');
+const config = require('../../../config/config');
 
-const serviceAPI = new ServiceAPI();
 const token_lifetime = 1;
 
 const missingAuthHeader = (res) => {
@@ -58,7 +57,7 @@ async function login (req, res) {
   });
 }
 
-async function registration (req, res, next) {
+function registration (req, res) {
   passport.authenticate('local-registration', (error, user, message) => {
     if (error) {
       return res.status(500).json({
@@ -77,8 +76,8 @@ async function registration (req, res, next) {
     const expires_in = DateTime.now().plus({days: token_lifetime}).valueOf();
 
     return res.status(200).json({access_token: token, expires_in});
-  })(req, res, next);
-}
+  })(req, res);
+};
 
 async function getOrganizations (req, res) {
   if (!req.headers.authorization) return missingAuthHeader(res);
@@ -104,14 +103,14 @@ async function getOrganizations (req, res) {
     }
 
     // Token is valid //
-    const {organizations} = await User.findById(decode.userId).select('-_id organizations');
+    const {organizations} = await User.findById(decode.userId).select('-_id organizations')
     const organizationList = await Organization.find({_id: organizations})
       .select('id logo fullName')
       .populate('nomenclature', '-_id products productCategories uploadDate')
       .lean();
     const editedOrganozationList = modifyOranizationList(organizationList);
 
-    res.json({organizations: editedOrganozationList});
+    res.json(editedOrganozationList);
   });
 }
 
@@ -154,19 +153,19 @@ async function getOrganizationOrders (req, res) {
     })
 
     //Token is valid
-    const organizationID = req.params.id;
-    const orders = await Order.findOne({organizationID});
+    const organizationId = req.params.id;
+    const orders = await Order.find({organizationId}).sort({createdTime: -1});
 
-    res.json({orders});
+    res.json(orders);
   });
 }
 
 async function updateNomenclature (req, res) {
   if (!req.headers.authorization) return missingAuthHeader(res);
-  const organizationID = req.params.id;
+  const organizationId = req.params.id;
   const token = req.header('authorization').split(' ')[1];
 
-  if (!token || !organizationID) throw new Error("Check req.header on have token or organizatoion ID");
+  if (!token || !organizationId) throw new Error("Check req.header on have token or organizatoion ID");
   jwt.verify(token, config.jwt_secret_key, async (err, decode) => {
       if (err) return res.status(401).json({
         error: "invalid_expiry_token",
@@ -175,9 +174,9 @@ async function updateNomenclature (req, res) {
 
       // Token is valid //
       const user = await User.findById({_id: decode.userId}).select('name password');
-      await serviceAPI.getToken(user.name, user.password);
-      const newNomenclature = await serviceAPI.getOnceNomenclatureJSON(organizationID);
-      const updateNomenclature = await Nomenclature.findOneAndUpdate({organizationID}, JSON.parse(newNomenclature), {useFindAndModify: false});
+      const serviceAPI = await new ServiceAPI({username: user.name, password: user.password});
+      const newNomenclature = await serviceAPI.getOnceNomenclatureJSON(organizationId);
+      const updateNomenclature = await Nomenclature.findOneAndUpdate({organizationId}, newNomenclature, {useFindAndModify: false});
       await updateNomenclature.save();
       res.json({status: 'ok'});
   });
@@ -221,8 +220,6 @@ async function updateSettigns(req, res, next) {
 
     res.json({title: 'Данные успешно сохранены'});
   });
-
-  next();
 }
 
 module.exports = {

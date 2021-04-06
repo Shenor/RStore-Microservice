@@ -1,9 +1,27 @@
-const sc = require('node-nats-streaming').connect('nats-cluster', 'test1', {
-  servers: ['nats://185.22.61.139:14222']
+const config = require('../config/config');
+const create_order = require('./scripts/createOrderIIKO');
+const sc = require('node-nats-streaming').connect(config.nats_cluster, 'iiko', {
+  servers: [config.nats_host]
 })
 
 sc.on('connect', () => {
   console.log('[NATS] connect');
+
+  const opts = sc.subscriptionOptions()
+    .setDurableName('iiko')
+    .setDeliverAllAvailable()
+    .setManualAckMode(true);
+
+  const subscription = sc.subscribe('iiko:orders', opts);
+
+    subscription.on('message', async (msg) => {
+    const dataString = msg.getData();
+    const data = JSON.parse(dataString);
+    create_order(data);
+    console.dir('Received a message [' + msg.getSequence() + '] ' + msg.getData())
+    msg.ack();
+  })
+
 })
 
 // emitted whenever the client disconnects from a server

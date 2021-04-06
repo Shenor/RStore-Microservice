@@ -11,15 +11,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "node-nats-streaming": "^0.3.2",
-    "node-telegram-bot-api": "^0.51.0"
-  },
-  "devDependencies": {
+    "axios": "^0.21.1",
+    "bot-brother": "^2.1.5",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "luxon": "^1.25.0",
-    "mongoose": "^5.11.15",
-    "morgan": "^1.10.0"
+    "express": "^4.17.1",
+    "express-winston": "^4.1.0",
+    "javascript-state-machine": "^3.1.0",
+    "luxon": "^1.26.0",
+    "mongoose": "^5.12.0",
+    "node-nats-streaming": "^0.3.2",
+    "node-telegram-bot-api": "^0.51.0",
+    "redis": "^2.8.0",
+    "telegraf": "^4.3.0",
+    "telegraf-session-local": "^2.1.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.1"
   }
 }

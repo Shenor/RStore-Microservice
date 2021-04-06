@@ -2,12 +2,12 @@ const winston = require('winston');
 require('winston-daily-rotate-file');
 
 const debugLogFormat = winston.format.printf(({ level, message, timestamp}) => {
-  return `[${new Date(timestamp).toLocaleString()}] [${level}]: ${message}`;
+  return `[${new Date(timestamp).toLocaleString("ru-RU")}] [${level}]: ${message}`;
 });
 
 const debugLog = new(winston.transports.DailyRotateFile)({
-  filename: './logs/[%DATE%] debug.log',
-  auditFile: './logs/debug-audit.json',
+  filename: './logs/%DATE%__debug.log',
+  auditFile: './logs/debug_audit.json',
   datePattern: 'YYYY-MM-DD',
   zippedArchive: true,
   maxSize: '20m',

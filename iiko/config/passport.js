@@ -9,6 +9,8 @@ const SeviceAPI = require('../src/service/ServiceAPI');
 const Organization = require('../src/models/organizationModel');
 const Nomenclature = require('../src/models/nomenclatureModel');
 
+const logger = require('../src/helpers/create-logger');
+
 passport.use('local-login', new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password',
@@ -37,69 +39,46 @@ passport.use('local-registration', new LocalStrategy({
   passwordField: 'password',
   passReqToCallback: true
 }, async function (req, username, password, done) {
-  const serviceAPI = new SeviceAPI();
-  const { contractStatus } = req.body;
-  const isGetToken = await serviceAPI.getToken(username, password);
+  const serviceAPI = await new SeviceAPI({username, password});
 
-  if (!isGetToken) return done(null, false, { error: "invalid_request", message: "Логин или пароль не совпадает с iikoBIZ" });
+  if (!serviceAPI.getToken()) return done(null, false, {error: "invalid_request", message: "Логин или пароль не совпадает с iikoBIZ"});
 
-  await serviceAPI.setOrganizationID();
-  const nomenclatureJSON = await serviceAPI.getNomenclatureJSON();
-  const organizationJSON = await serviceAPI.getOrganizationListJSON();
-  const nomenclature = nomenclatureJSON.map((nom) => {return JSON.parse(nom)});
-  const organization = organizationJSON.map((org) => {return JSON.parse(org)}).flat(1);
-  const nomenclatureModify = nomenclature.map((nom, idx) => {
-    nom.organizationID = serviceAPI._organizationID[idx];
-    return nom;
-  });
+  let organizations = await serviceAPI.setOrganizationId();
+  let nomenclatures = await serviceAPI.getNomenclatures();
 
-  await User.findOne({ name: username }, async function (err, user) {
+  if(!nomenclatures[0]) return done(null, false, {error: "invalid_request", message: "Номенклатура не выгружена"});
 
-    if (err) return done(err, false);
-    if (user)return done(null, false, {error: "invalid_client", message: "Такой пользователь уже существует"});
+  nomenclatures.forEach((item, idx) => item.organizationId = organizations[idx].id);
 
-    Nomenclature.insertMany(nomenclatureModify, async (err, doc) => {
-      if (err) {
-        console.log(err);
-        return done(null, false, {
-          error: "server_error",
-          message: "Ошибка при создании номенклатыры пользователя"
-        })
-      }
+  // Find exist user //
+  const user = await User.findOne({name: username}).lean();
+  if (user) return done(null, false, {error: "invalid_client", message: "Такой пользователь уже существует"});
 
-      const idNomenclatures = doc.map((item) => {return item._id;});
+  // Create Nomenclature //
+  try {
+    const doc = await Nomenclature.insertMany(nomenclatures);
+    const nomenclatures_id = doc.map(item => item._id);
+    organizations.forEach((item, idx) => item.nomenclature = nomenclatures_id[idx])
+  } catch (err) {
+    return done(null, false, {error: "server_error",message: "Ошибка при создании номенклатыры пользователя"})
+  }
 
-      /** Async/Await не работает с map, что бы функция передеанная в map заработала
-       * оборачиваем ее в PromiseAll. Не знаю как это работает но нужно запомнить
-        */
-      const organizationModify = await Promise.all(organization.map( async (org, idx) => {
-        const orders = new Order({ organizationID: org.id });
-        await orders.save();
-        org.orders = await (await Order.findOne({ organizationID: org.id }))._id;
-        org.nomenclature = idNomenclatures[idx];
-        return org;
-      }));
+  // Create Organization //
+  await Organization.insertMany(organizations, async (err, doc) => {
+    if (err) {
+      logger.error(`${JSON.stringify(err)}`)
+      return done(null, false, {error: "server_error", message: "Ошибка при создании организации пользователя"})
+    }
 
-      Organization.insertMany(organizationModify, async (err, doc) => {
-        if (err) {
-          console.log(err);
-          return done(null, false, {error: "server_error", message: "Ошибка при создании организации пользователя"})
-        }
-
-        const idOrganizations = doc.map((item) => {return item._id;});
-
-        const newUser = new User({
-          name: username,
-          password: password,
-          contractStatus,
-          organizations: idOrganizations,
-        });
-
-        await newUser.save();
-
-        return done(null, newUser, false);
-      });
+    const idOrganizations = doc.map(item => item._id);
+    const newUser = new User({
+      name: username,
+      password: password,
+      organizations: idOrganizations,
     });
+    await newUser.save();
+
+    return done(null, newUser, false);
   });
 }));
 
@@ -123,3 +102,88 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   User.findById(id, (err, user) => { done(err, user); });
 });
+
+
+// const user = await User.findOne({name: username}).lean();
+// if (user) return done(null, false, {error: "invalid_client", message: "Такой пользователь уже существует"});
+  // const nomenclatureModify = nomenclature.map((nom, idx) => {
+  //   nom.organizationID = serviceAPI.getOrganization(idx);
+  //   return nom;
+  // });
+
+  // await User.findOne({
+  //   name: username
+  // }, async function (err, user) {
+
+  //   if (err) return done(err, false);
+  //   if (user) return done(null, false, {
+  //     error: "invalid_client",
+  //     message: "Такой пользователь уже существует"
+  //   });
+
+  //   Nomenclature.insertMany(nomenclatureModify, async (err, doc) => {
+  //     if (err) {
+  //       console.log(err);
+  //       return done(null, false, {
+  //         error: "server_error",
+  //         message: "Ошибка при создании номенклатыры пользователя"
+  //       })
+  //     }
+
+  //     const idNomenclatures = doc.map((item) => {
+  //       return item._id;
+  //     });
+
+  //     /** Async/Await не работает с map, что бы функция передеанная в map заработала
+  //      * оборачиваем ее в PromiseAll. Не знаю как это работает но нужно запомнить
+  //      */
+  //     const organizationModify = await Promise.all(organization.map(async (org, idx) => {
+  //       //   const orders = new Order({ organizationID: org.id });
+  //       //   await orders.save();
+  //       org.orders = await (await Order.findOne({
+  //         organizationID: org.id
+  //       }))._id;
+  //       org.nomenclature = idNomenclatures[idx];
+  //       return org;
+  //     }));
+
+  //     Organization.insertMany(organizationModify, async (err, doc) => {
+  //       if (err) {
+  //         console.log(err);
+  //         return done(null, false, {
+  //           error: "server_error",
+  //           message: "Ошибка при создании организации пользователя"
+  //         })
+  //       }
+
+  //       const idOrganizations = doc.map((item) => {
+  //         return item._id;
+  //       });
+
+  //       const newUser = new User({
+  //         name: username,
+  //         password: password,
+  //         contractStatus,
+  //         organizations: idOrganizations,
+  //       });
+
+  //       await newUser.save();
+
+  //       return done(null, newUser, false);
+  //     });
+  //   });
+  // });
+
+
+  // Nomenclature.insertMany(nomenclatures, async (err, doc) => {
+  //   if (err) {
+  //     logger.error(`${JSON.stringify(err)}`)
+  //     return done(null, false, {error: "server_error",message: "Ошибка при создании номенклатыры пользователя"})
+  //   }
+
+  //   const nomenclatures_id = doc.map(item => item._id);
+  //   console.log(nomenclatures_id);
+  //   organizations.forEach((item, idx) => item.nomenclature = nomenclatures_id[idx])
+  // });
+
+  // await new Promise(resolve => setTimeout(resolve, 100));

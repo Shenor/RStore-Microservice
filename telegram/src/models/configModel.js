@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 const ConfigSchema = new Schema({
-  organizationID: {
+  organizationId: {
     type: String,
     required: true
   },

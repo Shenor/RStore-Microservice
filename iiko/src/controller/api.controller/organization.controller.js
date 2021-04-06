@@ -1,20 +1,21 @@
+const Order = require('../../models/orderModel');
 const Organization = require('../../models/organizationModel');
 const Nomenclature = require('../../models/nomenclatureModel');
 
 async function getNomenclature (req, res) {
-  const organizationID = req.params.organizationId ?? null;
-  const nomenclature = await Nomenclature.findOne({organizationID}).lean();
+  const organizationId = req.params.organizationId ?? null;
+  const nomenclature = await Nomenclature.findOne({organizationId}).lean();
   nomenclature
   ? res.json(nomenclature)
   : res.status(404).json({
     status: 'error',
-    message: `Nomenclature not found for organization: {${organizationID}}`
+    message: `Nomenclature not found for organization: {${organizationId}}`
   })
 }
 
 async function getStopList (req, res) {
-  const organizationID = req.params.organizationID ?? null;
-  const {stopList} = await Nomenclature.findOne({organizationID}).select('stopList') ?? {};
+  const organizationId = req.params.organizationId ?? null;
+  const {stopList} = await Nomenclature.findOne({organizationId}).select('stopList') ?? {};
 
   stopList && stopList.length
   ? res.json(stopList)
@@ -25,7 +26,7 @@ async function getStopList (req, res) {
 };
 
 async function getWorkTime(req, res) {
-  const organizationID = req.params.organizationID ?? null;
+  const organizationID = req.params.organizationId ?? null;
   const workTime = await Organization.findOne({id: organizationID}).select('-_id timeFrom timeTo').lean();
   workTime
   ? res.json(workTime)
@@ -35,7 +36,15 @@ async function getWorkTime(req, res) {
   })
 };
 
+async function getOrders(req, res) {
+  const organizationId = req.params.organizationId ?? null;
+  const limit = +req.query?.limit;
+  const orders = await Order.find({organizationId}).sort({createdTime: -1}).limit(limit).lean();
+  res.json(orders);
+}
+
 module.exports = {
+  getOrders,
   getWorkTime,
   getStopList,
   getNomenclature

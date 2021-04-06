@@ -1,9 +1,14 @@
-const rp = require('request-promise');
+const HttpClient = require('../helpers/create-http-client');
 const { v4: uuidv4 } = require('uuid');
 const Organization = require('../models/organizationModel');
+const logger = require('../helpers/create-logger');
+
+const yandexApi = new HttpClient(
+  {baseURL: 'https://payment.yandex.net/api/v3'},
+  {'Content-Type':'application/json'}
+)
 
 class Payment {
-  ednpoint = 'https://payment.yandex.net/api/v3';
 
   async createPayment(order) {
     const {
@@ -16,35 +21,40 @@ class Payment {
       organizationID,
       internal_number
     } = order;
+
+    const transformOrder = {
+      amount: {
+        value: isSelfService ? (orderPrice - discount) : (orderPrice - discount) + deliveryPrice,
+        currency: "RUB"
+      },
+      confirmation: {
+        type: "redirect",
+        return_url: return_url
+      },
+      metadata: {
+        activity_id,
+        organizationID,
+        internal_number
+      },
+      capture: true
+    };
+
     const { yandexToken } = await Organization.findOne({id: organizationID}).select('-_id yandexToken');
+
     try {
-      const payment = await rp(`${this.ednpoint}/payments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Idempotence-Key': uuidv4(),
-          'Authorization': `Bearer ${yandexToken}`
-        },
-        body: JSON.stringify({
-          amount: {
-            value: isSelfService ? (orderPrice - discount) : (orderPrice - discount) + deliveryPrice,
-            currency: "RUB"
-          },
-          confirmation: {
-            type: "redirect",
-            return_url: return_url
-          },
-          metadata:{
-            activity_id,
-            organizationID,
-            internal_number
-          },
-          capture: true
-        })
-      });
-      return JSON.parse(payment);
+      const {data} = await yandexApi.post(`/payments`, JSON.stringify(transformOrder),
+        {
+          headers: {
+            'Idempotence-Key': uuidv4(),
+            'Authorization': `Bearer ${yandexToken}`
+          }
+        }
+      );
+      return data;
     } catch (error) {
-      throw new Error(error)
+      error.response
+      ? logger.error(`Yandex response error - ${JSON.stringify(error.response.data)}`)
+      : logger.error(`Yandex error - ${JSON.stringify(error)}`)
     }
   }
 }

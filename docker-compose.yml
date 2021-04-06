@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  gateway:
+    container_name: gateway
+    image: shenor/rijet_gateway:1.0.0
+    ports:
+      - 3000:3000
+    volumes:
+      - gateway:/logs
+    env_file:
+      - .env
+  # iiko:
+  #   container_name: iiko
+  #   image: qwe
+  #   ports:
+  #     - 3010:3010
+  #   env_file:
+  #     - .env
+  # mail:
+  #   container_name: mailer
+  #   image: qwe
+  #   ports:
+  #     - 3012:3012
+  #   env_file:
+  #     - .env
+  # telegram:
+  #   container_name: telegram
+  #   image: qwe
+  #   depends_on:
+  #     - redis
+  #   ports:
+  #     - 3011:3011
+  #     - 6379:6379
+  #   env_file:
+  #     - .env
+  # redis:
+  #   container_name: redis
+  #   image: redis
+  #   ports:
+  #     - 6379:6379
+  #   environment:
+  #     - appendonly=yes
+  #   volumes:
+  #     - redis:/data
+volumes:
+  # redis:
+  gateway:
+
+#services:
+#  logstash:
+#    container_name: gateway
+#    image: docker.elastic.co/logstash/logstash:7.12.0
+#    ports:
+#      - 5044:5044
+#    environment:
+#      - XPACK_MONITORING_ENABLED=false
+#    volumes:
+#     - D:/docker-volume/logstash:/usr/share/logstash/pipeline
+#     - D:/docker-volume/logstash/:/usr/share/logstash/config
+
+#  redis:
+#    container_name: redis
+#    image: redis:latest
+#    ports:
+#      - 6379:6379
+#    volumes:
+#      - D:/docker-volume/redis:/data
+#    environment:
+#       - appendonly=yes
+#    command: redis-server --appendonly yes

@@ -7,6 +7,7 @@ router.get('/', (req, res) => res.send('IIKO api/v1 OK'));
 router.get('/organizations/:organizationId/nomenclature', controller.organization.getNomenclature);
 router.get('/organizations/:organizationId/workTime', controller.organization.getWorkTime);
 router.get('/organizations/:organizationId/stopList', controller.organization.getStopList);
+router.get('/organizations/:organizationId/orders', controller.organization.getOrders);
 
 router.get('/prime-hill/:phone', controller.primehill.findByPhone);
 

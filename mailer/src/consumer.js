@@ -15,7 +15,7 @@ sc.on('connect', async () => {
     .setDeliverAllAvailable()
     .setManualAckMode(true);
 
-  const subscription = sc.subscribe('sendOrderIikoToMail', opts)
+  const subscription = sc.subscribe('iiko:send_order_to_mail', opts)
 
   subscription.on('message', (msg) => {
     const data = JSON.parse(msg.getData());

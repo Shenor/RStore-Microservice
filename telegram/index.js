@@ -1,7 +1,7 @@
 const cors = require('cors')
-const logger = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
+const httpLogger = require('./src/helpers/create-http-logger');
 
 const app = express();
 const routes = require('./src/routes');
@@ -13,8 +13,8 @@ app.use(express.urlencoded({ extended: true }));
 //CORS
 // app.use(cors());
 
-//Logger
-app.use(logger('tiny'));
+// Logger
+app.use(httpLogger);
 
 // API Routes
 app.use(routes);

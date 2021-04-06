@@ -6,6 +6,8 @@ const logger = require('../../helpers/create-logger');
 const nanoid = require('../../helpers/create-nanoid');
 const nats_queue = require('../../consumer');
 
+// const create_order = require('../../scripts/createOrderIIKO');
+
 const paymentAPI = new PaymentAPI();
 const isSuccessPayment = (orderStatus) => {
   return orderStatus?.event && orderStatus?.event == 'payment.succeeded'
@@ -14,20 +16,20 @@ const isSuccessPayment = (orderStatus) => {
 }
 const pusblishOrder = (order) => {
 
-  // nats_queue.publish('orders_iiko', JSON.stringify(order), (err, guid) => {
-  //   if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
-  //   logger.info('Published message to orders_iiko with guid: ' + guid)
-  // });
+  nats_queue.publish('iiko:orders', JSON.stringify(order), (err, guid) => {
+    if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
+    logger.info('Published message to orders_iiko with guid: ' + guid)
+  });
 
-  // nats_queue.publish('send_order_iiko_to_mail', JSON.stringify(order), (err, guid) => {
+  // nats_queue.publish('iiko:send_order_to_mail', JSON.stringify(order), (err, guid) => {
   //   if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
   //   logger.info('Published message to send_order_iiko_to_mail with guid: ' + guid)
   // })
 
-  nats_queue.publish('send_order_to_telegram', JSON.stringify(order), (err, guid) => {
-    if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
-    logger.info('Published message to send_order_to_telegram with guid: ' + guid)
-  })
+  // nats_queue.publish('iiko:send_order_to_telegram', JSON.stringify(order), (err, guid) => {
+  //   if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
+  //   logger.info('Published message to send_order_to_telegram with guid: ' + guid)
+  // })
 
 };
 
@@ -47,6 +49,8 @@ async function create (req, res) {
   }
 
   pusblishOrder(modifyOrder);
+
+  // create_order(modifyOrder);
 
   return res.json({
     number: modifyOrder.internal_number,

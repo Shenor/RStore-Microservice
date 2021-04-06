@@ -9,7 +9,7 @@ const UserSchema = new Schema({
         unique: true,
         required: true
     },
-    organizationID: {
+    organizationId: {
         type: String,
         required: true
     },

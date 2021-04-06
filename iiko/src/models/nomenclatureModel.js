@@ -14,7 +14,7 @@ const NomenclatureSchema = new Schema({
     },
     revision: String,
     uploadDate: String,
-    organizationID: {
+    organizationId: {
         type: String,
         required: true
     }

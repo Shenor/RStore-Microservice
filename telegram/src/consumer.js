@@ -7,7 +7,6 @@ const sc = require('node-nats-streaming').connect('nats-cluster', 'telegram', {
 })
 
 const transformOrder = require('./utils/transform-order');
-const sharedOptions = {parse_mode: "HTML"};
 
 sc.on('connect', () => {
   console.log('[NATS] connect');
@@ -17,18 +16,19 @@ sc.on('connect', () => {
     .setDeliverAllAvailable()
     .setManualAckMode(true);
 
-  const subscription = sc.subscribe('send_order_to_telegram', opts);
+  const subscription = sc.subscribe('iiko:send_order_to_telegram', opts);
 
   // console.log(msg.isRedelivered())
   subscription.on('message', async (msg) => {
     const dataString = msg.getData();
     const data = JSON.parse(dataString);
-    const candidate = await Config.findOne({organizationID: data?.organizationID}).lean();
+    const candidate = await Config.findOne({organizationId: data?.organizationId}).lean();
+    console.log(candidate)
     if(!candidate) return msg.ack();
-    const users = await User.find({organizationID: data?.organizationID}).select('chatId subscribe_new_orders').lean();
+    const users = await User.find({organizationId: data?.organizationId}).select('chatId subscribe_new_orders').lean();
     users.forEach(user => {
       if(!user.subscribe_new_orders) return;
-      bot.sendMessage(user.chatId, `${transformOrder(data)}`, sharedOptions);
+      bot.api.sendMessage(user.chatId, `${transformOrder(data)}`, {parse_mode: "HTML"});
     });
     console.dir('Received a message [' + msg.getSequence() + '] ' + msg.getData())
     msg.ack();
