@@ -3,7 +3,7 @@ const Config = require('./models/configModel');
 
 const bot = require('./helpers/create-telegram-bot');
 const sc = require('node-nats-streaming').connect('nats-cluster', 'telegram', {
-  servers: ['nats://185.22.61.139:14222']
+  servers: ['nats://localhost:14222']
 })
 
 const transformOrder = require('./utils/transform-order');
