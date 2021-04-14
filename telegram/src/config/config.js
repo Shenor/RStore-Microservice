@@ -10,5 +10,6 @@ module.exports = {
   bot_token: process.env.TELEGRAM_BOT_TOKEN,
   nats_host: process.env.NATS_HOST,
   nats_cluster: process.env.NATS_CLUSTER,
-  port: process.env.TELEGRAM_PORT
+  port: process.env.TELEGRAM_PORT,
+  redis_url: process.env.REDIS_URL
 }

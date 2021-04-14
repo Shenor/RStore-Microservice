@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Config = require('./../models/configModel');
 
-router.get('/isExist/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   const organizationID = req.params.id;
   const candidate = await Config.findOne({organizationID});
   candidate
@@ -11,8 +11,8 @@ router.get('/isExist/:id', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  const organizationID = req.body.organizationID;
-  const newConf = new Config({organizationID});
+  const organizationId = req.body.organizationId;
+  const newConf = new Config({organizationId});
   newConf.save();
   res.status(200).send();
 });

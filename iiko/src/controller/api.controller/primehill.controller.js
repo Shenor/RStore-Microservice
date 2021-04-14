@@ -22,7 +22,7 @@ async function findByPhone(req, res) {
 
   } catch (e) {
     const {error} = JSON.parse(e.error)
-    res.json(error)
+    res.staus(500).json(error)
   }
 }
 

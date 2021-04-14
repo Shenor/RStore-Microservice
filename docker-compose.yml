@@ -1,15 +1,15 @@
 version: "3.8"
 
 services:
-  gateway:
-    container_name: gateway
-    image: shenor/rijet_gateway:1.0.0
-    ports:
-      - 3000:3000
-    volumes:
-      - gateway:/logs
-    env_file:
-      - .env
+  # gateway:
+  #   container_name: gateway
+  #   image: shenor/rijet_gateway:1.0.0
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - gateway:/logs
+  #   env_file:
+  #     - .env
   # iiko:
   #   container_name: iiko
   #   image: qwe
@@ -24,28 +24,37 @@ services:
   #     - 3012:3012
   #   env_file:
   #     - .env
-  # telegram:
-  #   container_name: telegram
-  #   image: qwe
-  #   depends_on:
-  #     - redis
-  #   ports:
-  #     - 3011:3011
-  #     - 6379:6379
-  #   env_file:
-  #     - .env
-  # redis:
-  #   container_name: redis
-  #   image: redis
-  #   ports:
-  #     - 6379:6379
-  #   environment:
-  #     - appendonly=yes
-  #   volumes:
-  #     - redis:/data
-volumes:
-  # redis:
-  gateway:
+  telegram:
+    container_name: telegram
+    image: shenor/rijet_telegram:1.0.0
+    depends_on:
+      - redis
+    ports:
+      - 3011:3011
+    env_file:
+      - .env
+  redis:
+    container_name: redis
+    image: redislabs/rejson
+    ports:
+      - 6379:6379
+    command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
+    volumes:
+      - D:/docker-volume/redis:/data
+# volumes:
+#   redis:
+  # gateway:
+
+
+
+
+
+
+
+
+
+
+
 
 #services:
 #  logstash:

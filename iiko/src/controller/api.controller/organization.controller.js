@@ -38,9 +38,11 @@ async function getWorkTime(req, res) {
 
 async function getOrders(req, res) {
   const organizationId = req.params.organizationId ?? null;
-  const limit = +req.query?.limit;
+  const limit = +req.query?.limit || 1;
   const orders = await Order.find({organizationId}).sort({createdTime: -1}).limit(limit).lean();
-  res.json(orders);
+  orders
+  ? res.json(orders)
+  : res.status(404).json({error: 'resource_not_found', message: 'organization orders not found'})
 }
 
 module.exports = {

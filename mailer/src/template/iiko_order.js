@@ -8,15 +8,15 @@ module.exports = function (order) {
     payment,
     discount,
     orderPrice,
-    selfService,
+    isSelfService,
     deliveryPrice,
   } = order;
-
   const adress = {
     city: order?.city ?? 'Не указано',
     street: order?.street ?? 'Не указано',
     home: order?.home ?? 'Не указано',
-    apartment: order?.apartment ?? 'Не указано'
+    apartment: order?.apartment ?? 'Не указано',
+    comment: order?.comment ?? ''
   }
   const renderOrderList = (items) => {
   let order = '';
@@ -203,12 +203,12 @@ module.exports = function (order) {
                        </table><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333"><br></p></td>
                      </tr>
                       <tr style="border-collapse:collapse">
-                      <td align="left" bgcolor="#fafaff" style="Margin:0;padding-bottom:10px;padding-left:20px;padding-right:20px"><h4 style="Margin:0;line-height:22px;mso-line-height-rule:exactly;font-family:'trebuchet ms', helvetica, sans-serif;font-size:18px">Адрес в заказе: ${selfService ? '(Самовывоз)':'(Доставка)'}</h4></td>
+                      <td align="left" bgcolor="#fafaff" style="Margin:0;padding-bottom:10px;padding-left:20px;padding-right:20px"><h4 style="Margin:0;line-height:22px;mso-line-height-rule:exactly;font-family:'trebuchet ms', helvetica, sans-serif;font-size:18px">Адрес в заказе: ${ isSelfService ? '(Самовывоз)':'(Доставка)'}</h4></td>
                      </tr>
                      <tr style="border-collapse:collapse">
                       <td class="es-m-p0" align="center" bgcolor="#fafaff" style="padding:0;Margin:0;padding-bottom:20px;padding-left:20px;padding-right:20px">
                        <table style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%" class="cke_show_border" cellspacing="1" cellpadding="1" border="0" align="left" role="presentation">
-                        ${ selfService
+                        ${ isSelfService
                         ? ''
                         : `
                          <tr style="border-collapse:collapse">
@@ -226,6 +226,10 @@ module.exports = function (order) {
                          <tr style="border-collapse:collapse">
                           <td style="width:200px;padding:0;Margin:0;font-size:14px;line-height:21px">Квартира:</td>
                           <td style="padding:0;Margin:0;font-size:14px;line-height:21px">${adress.apartment}</td>
+                         </tr>
+                         <tr style="border-collapse:collapse">
+                          <td style="width:200px;padding:0;Margin:0;font-size:14px;line-height:21px">Комментарий:</td>
+                          <td style="padding:0;Margin:0;font-size:14px;line-height:21px">${adress.comment}</td>
                          </tr>
                         `}
                        </table><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333"><br></p></td>

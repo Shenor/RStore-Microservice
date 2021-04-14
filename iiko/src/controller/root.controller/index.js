@@ -44,9 +44,9 @@ async function login (req, res) {
       });
     }
     if (!user.contractStatus) {
-      return res.status(401).json({
+      return res.status(402).json({
         title: "Оплатите подписку",
-        error: "invalid credentils"
+        error: "payment required"
       });
     }
 
@@ -65,12 +65,7 @@ function registration (req, res) {
         error: "Internal server error"
       });
     }
-    if (message) {
-      return res.status(400).json({
-        title: message.message,
-        error: "invalid credentils"
-      });
-    }
+    if (message) return res.status(400).json({...message});
 
     const token = jwt.sign({ userId: user._id}, config.jwt_secret_key, {expiresIn: `${token_lifetime} days`});
     const expires_in = DateTime.now().plus({days: token_lifetime}).valueOf();
@@ -126,7 +121,7 @@ async function getOrganizationById (req, res) {
 
     // Token is valid //
     const id = req.params.id;
-    const organization = await Organization.findOne({id}).select('name logo').populate('nomenclature');
+    const organization = await Organization.findOne({id}).select('name logo').populate('nomenclature').lean();
     const {
       nomenclature: {
         products,
@@ -135,7 +130,7 @@ async function getOrganizationById (req, res) {
     } = organization;
 
     res.json({
-      organization,
+      ...organization,
       productsCount: products.length,
       productCategoriesCount: productCategories.length
     });
@@ -196,9 +191,10 @@ async function getOrganizationSettings (req, res) {
 
     // Token is valid //
     const {site, token} = await User.findById({_id: decode.userId}).select('site token').lean();
-    !token
-    ? res.json({site})
-    : res.json({site, token})
+    res.json({
+      site,
+      token: token ? token : null
+    })
   });
 }
 

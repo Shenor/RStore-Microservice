@@ -18,7 +18,7 @@ class Payment {
       activity_id,
       deliveryPrice,
       isSelfService,
-      organizationID,
+      organizationId,
       internal_number
     } = order;
 
@@ -33,13 +33,13 @@ class Payment {
       },
       metadata: {
         activity_id,
-        organizationID,
+        organizationId,
         internal_number
       },
       capture: true
     };
 
-    const { yandexToken } = await Organization.findOne({id: organizationID}).select('-_id yandexToken');
+    const { yandexToken } = await Organization.findOne({id: organizationId}).select('-_id yandexToken');
 
     try {
       const {data} = await yandexApi.post(`/payments`, JSON.stringify(transformOrder),

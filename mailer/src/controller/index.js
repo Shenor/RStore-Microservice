@@ -6,7 +6,7 @@ function createOrganizationRoutes(req, res) {
   if (!data?.email || !organizationId) {
     return res.status(400).json({
       error: "invalid_request",
-      description: "organizationId or email fields is missing"
+      message: "organizationId or email fields is missing"
     });
   }
 
@@ -23,7 +23,7 @@ function subscriptionsRoutes(req, res) {
       logger.error(JSON.stringify(err));
       return res.status(500).json({
         error: 'processing_error',
-        description: 'failed request'
+        message: 'failed processing request'
       });
     }
   });

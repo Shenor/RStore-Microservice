@@ -46,13 +46,13 @@ passport.use('local-registration', new LocalStrategy({
   let organizations = await serviceAPI.setOrganizationId();
   let nomenclatures = await serviceAPI.getNomenclatures();
 
-  if(!nomenclatures[0]) return done(null, false, {error: "invalid_request", message: "Номенклатура не выгружена"});
+  if(!nomenclatures[0]) return done(null, false, {error: "processing_error", message: "Номенклатура не выгружена"});
 
   nomenclatures.forEach((item, idx) => item.organizationId = organizations[idx].id);
 
   // Find exist user //
   const user = await User.findOne({name: username}).lean();
-  if (user) return done(null, false, {error: "invalid_client", message: "Такой пользователь уже существует"});
+  if (user) return done(null, false, {error: "credentials_error", message: "Такой пользователь уже существует"});
 
   // Create Nomenclature //
   try {

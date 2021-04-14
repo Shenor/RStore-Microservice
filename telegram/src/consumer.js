@@ -1,13 +1,13 @@
 const User = require('./models/usersModel');
 const Config = require('./models/configModel');
 
-const config = require('./config/config');
 const bot = require('./helpers/create-telegram-bot');
+const config = require('./config/config');
+const logger = require('./helpers/create-logger');
+const transformOrder = require('./utils/transform-order');
 const sc = require('node-nats-streaming').connect(config.nats_cluster, 'telegram', {
   servers: [config.nats_host]
 })
-
-const transformOrder = require('./utils/transform-order');
 
 sc.on('connect', () => {
   console.log('[NATS] connect');
@@ -24,14 +24,13 @@ sc.on('connect', () => {
     const dataString = msg.getData();
     const data = JSON.parse(dataString);
     const candidate = await Config.findOne({organizationId: data?.organizationId}).lean();
-    console.log(candidate)
     if(!candidate) return msg.ack();
     const users = await User.find({organizationId: data?.organizationId}).select('chatId subscribe_new_orders').lean();
     users.forEach(user => {
       if(!user.subscribe_new_orders) return;
       bot.api.sendMessage(user.chatId, `${transformOrder(data)}`, {parse_mode: "HTML"});
     });
-    console.dir('Received a message [' + msg.getSequence() + '] ' + msg.getData())
+    logger.info('Received a message [' + msg.getSequence() + '] ' + msg.getData())
     msg.ack();
   })
 
@@ -39,19 +38,19 @@ sc.on('connect', () => {
 
 // emitted whenever the client disconnects from a server
 sc.on('disconnect', () => {
-  console.log('[NATS] disconnect');
+  logger.info('[NATS] disconnect');
 });
 
 // emitted whenever the client is attempting to reconnect
 sc.on('reconnecting', () => {
-  console.log('reconnecting');
+  logger.info('reconnecting');
 });
 
 // emitted whenever the client reconnects
 // reconnect callback provides a reference to the connection as an argument
 sc.on('reconnect', () => {
-  console.log(`[NATS] reconnect`);
-  console.log(`reconnected to ${sc.nc.currentServer.url}`)
+  logger.info(`[NATS] reconnect`);
+  logger.info(`reconnected to ${sc.nc.currentServer.url}`)
 });
 
 // emitted whenever the server returns a permission error for
@@ -59,15 +58,15 @@ sc.on('reconnect', () => {
 // means that the client cannot subscribe and/or publish/request
 // on the specific subject
 sc.on('permission_error', function (err) {
-  console.error('[NATS] got a permissions error', err.message);
+  logger.error('[NATS] got a permissions error: ', err.message);
 });
 
 sc.on('connection_lost', async (error) => {
-  console.log('disconnected from STAN: ', error);
+  logger.error('disconnected from STAN: ', error);
 });
 
 sc.on('error', (error) => {
-  console.log('[Nats] error', error);
+  logger.error('[Nats] error: ', error);
 });
 
 // emitted when the connection is closed - once a connection is closed

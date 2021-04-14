@@ -3,7 +3,7 @@ const config = require('../config/config');
 
 const bot = bb({
   key: config.bot_token,
-  sessionManager: bb.sessionManager.redis({port: '6379', host: '127.0.0.1'}),
+  sessionManager: bb.sessionManager.redis({url: config.redis_url}),
   polling: { interval: 0, timeout: 1 }
 });
 

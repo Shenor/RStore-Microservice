@@ -1,37 +1,34 @@
 const winston = require('winston');
-const expressWinston = require('express-winston');
 require('winston-daily-rotate-file');
 
-const accessLogFormat = winston.format.printf(({ level, message, timestamp, meta:{ res, req } }) => {
-  return `[${new Date(timestamp).toLocaleString("ru-RU")}] [${level}]: ${message} ${res.statusCode} -- ${JSON.stringify(req.headers)}`;
-});
-const consoleLogFormat = winston.format.printf(({ level, message, timestamp, meta:{ res } }) => {
-  return `[${new Date(timestamp).toLocaleString("ru-RU")}] [${level}]: ${message} ${res.statusCode}`;
+const debugLogFormat = winston.format.printf(({level, message, timestamp}) => {
+  return `[${new Date(timestamp).toLocaleString("ru-RU")}] [${level}]: ${message}`;
 });
 
-const accessLog = new(winston.transports.DailyRotateFile)({
-  filename: './logs/%DATE%__access.log',
-  auditFile: './logs/access-audit.json',
+const debugLog = new(winston.transports.DailyRotateFile)({
+  filename: './logs/%DATE%__debug.log',
+  auditFile: './logs/debug-audit.json',
   datePattern: 'YYYY-MM-DD',
   zippedArchive: true,
   maxSize: '20m',
   maxFiles: '14d',
   format: winston.format.combine(
+    winston.format.splat(),
     winston.format.timestamp(),
-    accessLogFormat
+    debugLogFormat
   )
 });
 
-const httpLogger = expressWinston.logger({
+const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
-        winston.format.timestamp(),
-        consoleLogFormat
+        winston.format.splat(),
+        winston.format.simple()
       )
     }),
-    accessLog
+    debugLog
   ]
-})
+});
 
-module.exports = httpLogger;
+module.exports = logger

@@ -1,11 +1,13 @@
-const User = require('./models/usersModel');
-const httpClient = require('./helpers/create-http-client');
 const bot = require('./helpers/create-telegram-bot');
+const User = require('./models/usersModel');
+const logger = require('./helpers/create-logger');
+const httpClient = require('./helpers/create-http-client');
 const transformOrder = require('./utils/transform-order');
 
 const api = httpClient({baseURL: 'http://localhost:3000/iiko/api/v1'}, {origin: 'http://localhost:3011'})
 
 bot.use('before', function (ctx) {
+  logger.info(JSON.stringify(ctx.message));
   // console.log(ctx.session);
   // console.log(ctx._handler.session);
 })
@@ -89,10 +91,10 @@ bot.command('history')
     if (!ctx.session.isAuth) return ctx.sendMessage("Сначала необходимо авторизоваться!")
     const res = await api.get(`/organizations/${ctx.session.organization_id}/orders?limit=5`);
     const data = res.data;
-    console.log(data);
-      // data.forEach(item => {
-      //   ctx.sendMessage(transformOrder(item), {parse_mode: "HTML"});
-      // })
+    // console.log(data);
+      data.forEach(item => {
+        ctx.sendMessage(transformOrder(item), {parse_mode: "HTML"});
+      })
     return ctx.sendMessage("История заказов")
   })
 

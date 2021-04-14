@@ -21,15 +21,15 @@ const pusblishOrder = (order) => {
     logger.info('Published message to orders_iiko with guid: ' + guid)
   });
 
-  // nats_queue.publish('iiko:send_order_to_mail', JSON.stringify(order), (err, guid) => {
-  //   if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
-  //   logger.info('Published message to send_order_iiko_to_mail with guid: ' + guid)
-  // })
+  nats_queue.publish('iiko:send_order_to_mail', JSON.stringify(order), (err, guid) => {
+    if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
+    logger.info('Published message to send_order_iiko_to_mail with guid: ' + guid)
+  })
 
-  // nats_queue.publish('iiko:send_order_to_telegram', JSON.stringify(order), (err, guid) => {
-  //   if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
-  //   logger.info('Published message to send_order_to_telegram with guid: ' + guid)
-  // })
+  nats_queue.publish('iiko:send_order_to_telegram', JSON.stringify(order), (err, guid) => {
+    if (err) return logger.error('Publish to mailer failed: ' + JSON.stringify(err));
+    logger.info('Published message to send_order_to_telegram with guid: ' + guid)
+  })
 
 };
 
