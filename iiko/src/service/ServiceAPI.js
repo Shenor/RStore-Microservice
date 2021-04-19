@@ -43,7 +43,7 @@ class ServiceAPI {
       const {data} = await iikoBiz.get(`/stopLists/getDeliveryStopList?access_token=${this.#token}&organization=${organizationId}`);
       return data;
     } catch (e) {
-      this.#loggerError({metadata:{caller: 'getStopList', organizationId}, ...e});
+      this.#loggerError({metadata: {caller: 'getStopList', organizationId}, ...e});
     }
   }
 
@@ -56,16 +56,16 @@ class ServiceAPI {
       const nomenclature = await Promise.all(nomenclaturePromise);
       return nomenclature;
     } catch (e) {
-      this.#loggerError(e);
+      this.#loggerError({metadata: {caller: 'getNomenclatures'}, ...e});
     }
   }
 
-  getOnceNomenclatureJSON = async (organizationID) => {
+  getOnceNomenclatureJSON = async (organizationId) => {
     try {
-      const {data} = await iikoBiz.get(`/nomenclature/${organizationID}?access_token=${this.#token}`);
+      const {data} = await iikoBiz.get(`/nomenclature/${organizationId}?access_token=${this.#token}`);
       return data;
     } catch (e) {
-      this.#loggerError(e);
+      this.#loggerError({metadata: {caller: 'getOnceNomenclatureJSON', organizationId}, ...e});
     }
   }
 
@@ -78,16 +78,16 @@ class ServiceAPI {
       const organizationList = await Promise.all(organizationListPromise);
       return organizationList;
     } catch (e) {
-      this.#loggerError(e);
+      this.#loggerError({metadata: {caller: 'getOrganizationListJSON'}, ...e});
     }
   }
 
-  getDiscounts = async (organizationID) => {
+  getDiscounts = async (organizationId) => {
     try {
-      const {data} = await iikoBiz.get(`/deliverySettings/deliveryDiscounts?access_token=${this.#token}&organization=${organizationID}`);
+      const {data} = await iikoBiz.get(`/deliverySettings/deliveryDiscounts?access_token=${this.#token}&organization=${organizationId}`);
       return data;
     } catch (e) {
-      this.#loggerError(e);
+      this.#loggerError({metadata: {caller: 'getDiscounts', organizationId}, ...e});
     }
   }
 
@@ -97,7 +97,7 @@ class ServiceAPI {
       data.forEach((org) => this.#organizationId.push(org.id));
       return data;
     } catch (e) {
-      this.#loggerError(e);
+      this.#loggerError({metadata: {caller: 'setOrganizationId'}, ...e});
     }
   }
 
