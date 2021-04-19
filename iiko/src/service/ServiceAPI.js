@@ -38,12 +38,12 @@ class ServiceAPI {
     }
   }
 
-  getStopList = async (organizationID) => {
+  getStopList = async (organizationId) => {
     try {
-      const {data} = await iikoBiz.get(`/stopLists/getDeliveryStopList?access_token=${this.#token}&organization=${organizationID}`);
+      const {data} = await iikoBiz.get(`/stopLists/getDeliveryStopList?access_token=${this.#token}&organization=${organizationId}`);
       return data;
     } catch (e) {
-      this.#loggerError(e);
+      this.#loggerError({metadata:{caller: 'getStopList', organizationId}, ...e});
     }
   }
 
@@ -141,7 +141,7 @@ class ServiceAPI {
 
   #loggerError(e){
     e.response
-      ? logger.error(`${JSON.stringify(e.response.data)}`)
+      ? logger.error(`${JSON.stringify({...e.response.data ,metadata: e.metadata ? e.metadata : null})}`)
       : e.request
         ? logger.error(`Server iikoBiz not response -${JSON.stringify(e.request)}`)
         : logger.error(`Request error - ${JSON.stringify(e.message)}`)
