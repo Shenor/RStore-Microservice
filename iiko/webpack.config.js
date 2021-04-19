@@ -1,8 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  // mode: 'production',
-  // mode: 'production',
+  mode: 'production',
   devtool: false,
   context: path.resolve(__dirname, 'src'),
   entry: {

@@ -19,7 +19,7 @@ class ServiceAPI {
       try {
         await this.#setToken();
       } catch (error) {
-        return reject(error);
+        resolve(null);
       }
       resolve(this);
     })
@@ -33,7 +33,8 @@ class ServiceAPI {
       const res = await iikoBiz.get(`/auth/access_token?user_id=${this.#username}&user_secret=${this.#password}`);
       this.#token = res.data;
     } catch (e) {
-      logger.error(`Error message get Token: ${e}`);
+      logger.error(`${e} get token for ${this.#username}`);
+      throw e;
     }
   }
 

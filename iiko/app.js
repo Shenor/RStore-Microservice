@@ -9,13 +9,11 @@ const httpLogger    = require('./src/helpers/create-http-logger');
 const config = require('./config/config');
 const routes = require('./src/routes/routes');
 
-// console.log(config)
-
-//Service Worker Database
-// require('./service/ServiceWorker_db');
-
 // Nats Streaming //
-require('./src/consumer');
+// require('./src/consumer');
+
+// Service Worker Database
+require('./src/service/ServiceWorker_db');
 
 var app = express();
 
