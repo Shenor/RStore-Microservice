@@ -17,13 +17,15 @@ services:
   #     - 3010:3010
   #   env_file:
   #     - .env
-  # mail:
-  #   container_name: mailer
-  #   image: qwe
-  #   ports:
-  #     - 3012:3012
-  #   env_file:
-  #     - .env
+  mail:
+    container_name: mailer
+    image: shenor/rijet_mailer
+    depends_on:
+      - redis
+    ports:
+      - 3012:3012
+    env_file:
+      - .env
   telegram:
     container_name: telegram
     image: shenor/rijet_telegram:1.0.0
@@ -40,9 +42,9 @@ services:
       - 6379:6379
     command: redis-server --appendonly yes --loadmodule /usr/lib/redis/modules/rejson.so
     volumes:
-      - D:/docker-volume/redis:/data
-# volumes:
-#   redis:
+      - redis:/data
+volumes:
+  redis:
   # gateway:
 
 

@@ -110,4 +110,5 @@ dist
 # TernJS port file
 .tern-port
 
-test.js*
+# Test file ignored
+test.js
